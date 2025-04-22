@@ -2,20 +2,23 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
     <metadata>
         <id>Pipelink.Outbox</id>
-        <version>1.0.13</version>
+        <version>1.0.20</version>
         <authors>Pipelink</authors>
         <owners>Pipelink</owners>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <projectUrl>https://github.com/bburaksseyhan/pipelink.outbox</projectUrl>
         <description>A .NET library for implementing the outbox pattern with Entity Framework Core. This package provides a reliable way to handle message publishing in distributed systems, ensuring that messages are not lost even if the system fails.</description>
-        <releaseNotes>Added comprehensive README files with implementation details and test results. Improved documentation and examples.</releaseNotes>
+        <releaseNotes>Fixed repository URLs and metadata consistency.</releaseNotes>
         <copyright>Copyright © 2025</copyright>
         <tags>Outbox Pattern EntityFrameworkCore EFCore Distributed-Systems Message-Queue</tags>
-        <repository type="git" url="https://github.com/seyhanb/pipelink.outbox" />
+        <repository type="git" url="https://github.com/bburaksseyhan/pipelink.outbox" branch="main" />
         <dependencies>
             <group targetFramework="net8.0">
                 <dependency id="Microsoft.EntityFrameworkCore" version="8.0.0" />
+                <dependency id="Microsoft.Extensions.Hosting" version="8.0.0" />
             </group>
         </dependencies>
+        <PackageIcon>icon.png</PackageIcon>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
     </metadata>
