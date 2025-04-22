@@ -2,22 +2,28 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
     <metadata>
         <id>Pipelink.Outbox</id>
-        <version>1.0.9</version>
-        <authors>seyhanb</authors>
-        <owners>seyhanb</owners>
+        <version>1.0.12</version>
+        <authors>Pipelink</authors>
+        <owners>Pipelink</owners>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
-        <license type="expression">MIT</license>
-        <projectUrl>https://github.com/seyhanb/pipelink.outbox</projectUrl>
-        <description>A .NET library for implementing the outbox pattern with Entity Framework Core.</description>
-        <releaseNotes>Updated README with improved documentation and examples</releaseNotes>
-        <copyright>Copyright 2025</copyright>
-        <tags>outbox pattern entity-framework-core</tags>
-        <icon>pipelink-nuget-icon.png</icon>
-        <readme>README.md</readme>
+        <description>A .NET library for implementing the outbox pattern with Entity Framework Core. This package provides a reliable way to handle message publishing in distributed systems, ensuring that messages are not lost even if the system fails.</description>
+        <releaseNotes>Updated package metadata and dependencies</releaseNotes>
+        <copyright>Copyright © 2025</copyright>
+        <tags>Outbox Pattern EntityFrameworkCore EFCore Distributed-Systems Message-Queue</tags>
+        <repository type="git" url="https://github.com/seyhanb/pipelink.outbox" />
+        <dependencies>
+            <group targetFramework="net8.0">
+                <dependency id="Microsoft.EntityFrameworkCore" version="8.0.0" />
+            </group>
+        </dependencies>
+        <PackageIcon>icon.png</PackageIcon>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
     </metadata>
     <files>
-        <file src="bin\Release\net8.0\Pipelink.Outbox.dll" target="lib\net8.0" />
-        <file src="pipelink-nuget-icon.png" target="" />
-        <file src="README.md" target="" />
+        <file src="bin/Release/net8.0/Pipelink.Outbox.dll" target="lib/net8.0" />
+        <file src="pipelink-outbox.png" target="icon.png" />
+        <file src="README.md" target="/" />
+        <file src="LICENSE" target="/" />
     </files>
 </package> 
