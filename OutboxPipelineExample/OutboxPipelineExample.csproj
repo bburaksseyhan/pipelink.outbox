@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Pipelink.Outbox" Version="1.0.5" />
+    <ProjectReference Include="..\Pipelink.Outbox\Pipelink.Outbox.csproj" />
   </ItemGroup>
 
 </Project>

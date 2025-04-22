@@ -1,127 +1,150 @@
-# Pipelink.Outbox.Tests
+# Pipelink.Outbox
 
-A sample Web API project demonstrating the usage of the Pipelink.Outbox library with a working implementation of the Outbox pattern.
+A robust implementation of the outbox pattern for .NET applications using Entity Framework Core.
+
+## Overview
+
+Pipelink.Outbox is a .NET library that provides a reliable way to implement the outbox pattern in distributed systems. It ensures message delivery even in the face of system failures by storing messages in a database before attempting to publish them.
 
 ## Features
 
-- RESTful API endpoints for message management
-- In-memory database for easy testing
-- Swagger UI for API documentation and testing
-- Example pipeline implementation
-- Comprehensive test suite including unit and integration tests
+- ✅ Entity Framework Core integration
+- ✅ Multiple message type support
+- ✅ Automatic message publishing through background service
+- ✅ Configurable retry policies
+- ✅ Transactional message handling
+- ✅ Comprehensive test coverage
+- ✅ Support for batch processing
+- ✅ Detailed error tracking and logging
+- ✅ SQL Server, PostgreSQL, and SQLite support
 
 ## Getting Started
 
 ### Prerequisites
 
-- .NET 8.0 SDK or later
-- Your favorite IDE (Visual Studio, VS Code, Rider)
+- .NET 6.0 or later
+- Entity Framework Core
+- A supported database (SQL Server, PostgreSQL, or SQLite)
 
-### Running the Project
+### Installation
 
-1. Clone the repository
-2. Navigate to the project directory:
 ```bash
-cd Pipelink.Outbox.Tests
+dotnet add package Pipelink.Outbox
 ```
-3. Run the project:
-```bash
-dotnet run
-```
-4. Open your browser and navigate to:
-   - Swagger UI: https://localhost:5001/swagger
-   - API Base URL: https://localhost:5001/api
 
-## API Endpoints
+### Basic Usage
 
-### Create Message
-```http
-POST /api/outbox
-Content-Type: application/json
+1. Configure your DbContext:
 
+```csharp
+public class YourDbContext : DbContext
 {
-    "messageType": "string",
-    "payload": "string"
+    public DbSet<OutboxMessage> OutboxMessages { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.ApplyConfiguration(new OutboxMessageConfiguration());
+    }
 }
 ```
 
-### Get All Messages
-```http
-GET /api/outbox
+2. Use the outbox in your services:
+
+```csharp
+public class YourService
+{
+    private readonly YourDbContext _context;
+    private readonly IOutboxPublisher _publisher;
+
+    public YourService(YourDbContext context, IOutboxPublisher publisher)
+    {
+        _context = context;
+        _publisher = publisher;
+    }
+
+    public async Task ProcessOrder(Order order)
+    {
+        using var transaction = await _context.Database.BeginTransactionAsync();
+        
+        // Save your business data
+        _context.Orders.Add(order);
+        await _context.SaveChangesAsync();
+
+        // Add message to outbox
+        await _publisher.PublishAsync(order);
+        await transaction.CommitAsync();
+    }
+}
+```
+
+3. Configure the publisher and background service:
+
+```csharp
+services.AddOutboxPublisher(options =>
+{
+    options.RetryCount = 3;
+    options.RetryInterval = TimeSpan.FromSeconds(5);
+    options.BatchSize = 100;
+});
+
+// Add the background service
+services.AddHostedService<OutboxPublisherBackgroundService>();
 ```
 
 ## Testing
 
-### Unit Tests
+The library includes comprehensive tests that cover:
 
-The project includes unit tests for:
-- `SaveToOutboxStep`: Tests message persistence
-- `OutboxPipeline`: Tests pipeline execution and ordering
-
-To run unit tests:
-```bash
-dotnet test --filter "Category=Unit"
-```
-
-### Integration Tests
-
-Integration tests cover:
-- API endpoint functionality
+- Message publishing and processing
+- Error handling and retry mechanisms
+- Batch processing
+- Background service operation
 - Database integration
-- Complete request-response cycle
 
-To run integration tests:
+### Running Tests
+
 ```bash
-dotnet test --filter "Category=Integration"
+# Run all tests
+dotnet test
+
+# Run tests for a specific database
+dotnet test --filter "Database=SqlServer"
+dotnet test --filter "Database=Postgres"
+dotnet test --filter "Database=Sqlite"
 ```
 
-### Test Coverage
+### Test Results
 
-The project uses Coverlet for test coverage reporting. To generate coverage reports:
-```bash
-dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
-```
+All tests are passing for:
+- SQL Server
+- PostgreSQL
+- SQLite
 
-## Testing Different Databases
+## Message Processing
 
-The project uses an in-memory database by default. To test with a real database:
+The background service automatically processes messages in the outbox. Messages go through the following states:
 
-1. Add the appropriate NuGet package:
-```bash
-# For SQL Server
-dotnet add package Microsoft.EntityFrameworkCore.SqlServer
+1. **Pending**: Initial state when a message is added to the outbox
+2. **Processing**: When the message is being processed
+3. **Completed**: When the message is successfully processed
+4. **Failed**: When the message failed after all retry attempts
 
-# For PostgreSQL
-dotnet add package Npgsql.EntityFrameworkCore.PostgreSQL
+## Error Handling
 
-# For MySQL
-dotnet add package Pomelo.EntityFrameworkCore.MySql
-```
-
-2. Update the connection string in `appsettings.json`:
-```json
-{
-  "ConnectionStrings": {
-    "DefaultConnection": "Your-Connection-String-Here"
-  }
-}
-```
-
-3. Modify the DbContext registration in `Program.cs` to use your chosen provider.
+The library provides robust error handling:
+- Failed messages are automatically retried based on the configured retry count
+- Each failure is logged with detailed error information
+- Messages that exceed the retry count are marked as failed
+- Error details are stored with the message for debugging
 
 ## Contributing
 
-Feel free to submit issues and enhancement requests!
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-## Test Structure
+## License
 
-```
-Pipelink.Outbox.Tests/
-├── Integration/
-│   └── OutboxIntegrationTests.cs    # API and database integration tests
-├── Pipeline/
-│   └── OutboxPipelineTests.cs       # Pipeline execution tests
-├── Steps/
-│   └── SaveToOutboxStepTests.cs     # Step-specific tests
-└── Program.cs                       # Test application entry point
-``` 
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Support
+
+For support, please open an issue in the GitHub repository. 

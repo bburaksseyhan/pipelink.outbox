@@ -4,8 +4,8 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <Version>1.0.12</Version>
-        <PackageVersion>1.0.12</PackageVersion>
+        <Version>1.0.13</Version>
+        <PackageVersion>1.0.13</PackageVersion>
         <PackageIcon>icon.png</PackageIcon>
         <Description>A .NET library for implementing the outbox pattern with Entity Framework Core.</Description>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -14,6 +14,7 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
     </ItemGroup>
 
     <ItemGroup>

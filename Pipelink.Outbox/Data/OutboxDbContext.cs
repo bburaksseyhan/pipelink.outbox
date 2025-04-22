@@ -31,7 +31,7 @@ namespace Pipelink.Outbox.Data
         /// outbox pattern implementations. It allows querying, adding, updating, and deleting
         /// <c>OutboxMessage</c> records.
         /// </summary>
-        public DbSet<OutboxMessage> OutboxMessages { get; set; }
+        public DbSet<OutboxMessage> OutboxMessages { get; set; } = default!;
 
         /// Configures the entity mappings for the context.
         /// This method is called when the model for a derived context is being created.
@@ -47,7 +47,8 @@ namespace Pipelink.Outbox.Data
                 entity.Property(e => e.MessageType).IsRequired();
                 entity.Property(e => e.Payload).IsRequired();
                 entity.Property(e => e.CreatedAt).IsRequired();
-                entity.Property(e => e.Status).IsRequired();
+                entity.Property(e => e.IsProcessed).IsRequired();
+                entity.Property(e => e.RetryCount).IsRequired();
             });
         }
     }

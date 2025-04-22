@@ -10,9 +10,12 @@ Pipelink.Outbox provides a simple and efficient way to implement the outbox patt
 
 - Easy integration with Entity Framework Core
 - Support for multiple message types
-- Automatic message publishing
+- Automatic message publishing through background service
 - Configurable retry policies
 - Transactional message handling
+- Comprehensive test coverage
+- Support for batch processing
+- Detailed error tracking and logging
 
 ## Installation
 
@@ -59,28 +62,24 @@ public class YourService
         await _context.SaveChangesAsync();
 
         // Add message to outbox
-        var message = new OutboxMessage
-        {
-            MessageType = "OrderCreated",
-            Payload = JsonSerializer.Serialize(order),
-            CreatedAt = DateTime.UtcNow
-        };
-        _context.OutboxMessages.Add(message);
-        await _context.SaveChangesAsync();
-
+        await _publisher.PublishAsync(order);
         await transaction.CommitAsync();
     }
 }
 ```
 
-3. Configure the publisher in your startup:
+3. Configure the publisher and background service in your startup:
 
 ```csharp
 services.AddOutboxPublisher(options =>
 {
     options.RetryCount = 3;
     options.RetryInterval = TimeSpan.FromSeconds(5);
+    options.BatchSize = 100;
 });
+
+// Add the background service
+services.AddHostedService<OutboxPublisherBackgroundService>();
 ```
 
 ## Configuration Options
@@ -88,6 +87,38 @@ services.AddOutboxPublisher(options =>
 - `RetryCount`: Number of retry attempts for failed messages (default: 3)
 - `RetryInterval`: Time between retry attempts (default: 5 seconds)
 - `BatchSize`: Number of messages to process in a single batch (default: 100)
+
+## Message Processing
+
+The library includes a background service that automatically processes messages in the outbox. Messages go through the following states:
+
+1. **Pending**: Initial state when a message is added to the outbox
+2. **Processing**: When the message is being processed
+3. **Completed**: When the message is successfully processed
+4. **Failed**: When the message failed after all retry attempts
+
+## Error Handling
+
+The library provides robust error handling:
+- Failed messages are automatically retried based on the configured retry count
+- Each failure is logged with detailed error information
+- Messages that exceed the retry count are marked as failed
+- Error details are stored with the message for debugging
+
+## Testing
+
+The library includes comprehensive tests covering:
+- Message publishing
+- Message processing
+- Error handling
+- Retry mechanisms
+- Batch processing
+- Background service operation
+
+To run the tests:
+```bash
+dotnet test
+```
 
 ## License
 
@@ -99,4 +130,4 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## Support
 
-If you encounter any issues or have questions, please open an issue on GitHub. 
+For support, please open an issue in the GitHub repository. 

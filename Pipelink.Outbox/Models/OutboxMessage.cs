@@ -1,3 +1,5 @@
+using System;
+
 namespace Pipelink.Outbox.Models
 {
     /// <summary>
@@ -53,7 +55,7 @@ namespace Pipelink.Outbox.Models
         /// This property is used to track the state of a message within the outbox mechanism, such as "Pending", "Processed", or "Failed".
         /// The status is required and must be updated appropriately within the message lifecycle.
         /// </remarks>
-        public required string Status { get; set; }
+        public required string Status { get; set; } = "Pending";
 
         /// <summary>
         /// Represents the number of times the message processing has been retried.
@@ -70,5 +72,28 @@ namespace Pipelink.Outbox.Models
         /// It is optional and may be null if no errors occurred.
         /// </remarks>
         public string? Error { get; set; }
+
+        /// <summary>
+        /// Gets or sets the last error message associated with the processing status of the Outbox message.
+        /// </summary>
+        /// <remarks>
+        /// This property holds any error information encountered during the processing of the message.
+        /// It is optional and may be null if no errors occurred.
+        /// </remarks>
+        public string? LastError { get; set; }
+
+        /// <summary>
+        /// Gets or sets the date and time when the last error occurred.
+        /// </summary>
+        /// <remarks>
+        /// This property records the timestamp when the last error occurred.
+        /// It is optional and may be null if no errors occurred.
+        /// </remarks>
+        public DateTime? LastErrorAt { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the message has been processed.
+        /// </summary>
+        public bool IsProcessed { get; set; }
     }
 } 
