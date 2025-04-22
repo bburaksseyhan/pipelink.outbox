@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+    <metadata>
+        <id>Pipelink.Outbox</id>
+        <version>1.0.4</version>
+        <authors>seyhanb</authors>
+        <owners>seyhanb</owners>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <license type="expression">MIT</license>
+        <projectUrl>https://github.com/seyhanb/pipelink.outbox</projectUrl>
+        <description>A .NET library for implementing the outbox pattern with Entity Framework Core.</description>
+        <releaseNotes>Updated package configuration</releaseNotes>
+        <copyright>Copyright 2024</copyright>
+        <tags>outbox pattern entity-framework-core</tags>
+        <icon>pipelink-outbox.png</icon>
+    </metadata>
+    <files>
+        <file src="bin\Release\net8.0\Pipelink.Outbox.dll" target="lib\net8.0" />
+        <file src="pipelink-outbox.png" target="" />
+    </files>
+</package> 
